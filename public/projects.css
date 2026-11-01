@@ -5,3 +5,17 @@
 /* Primary logo integration */
 .brand-logo{display:block;width:76px;height:auto;object-fit:contain}.topbar .brand-logo{filter:drop-shadow(0 0 10px rgba(199,255,53,.08))}.demo-core img{width:118px;height:auto;transform:rotate(-45deg)}.signal-orbit i img{width:80%;height:auto}.signal-orbit i{overflow:hidden}footer .brand-logo{width:72px}
 @media(max-width:600px){.topbar .brand-logo{width:68px}footer .brand-logo{width:60px}}
+
+/* Keep display typography fully inside narrow iPhone and in-app browser viewports. */
+@media(max-width:600px){
+  html,body,body>div{max-width:100%;overflow-x:clip}
+  .hero-title{font-size:12.2vw;letter-spacing:-.055em}
+  .hero-title .line,.hero-title .line>span{max-width:100%}
+  .contact{overflow:hidden}
+  .contact-title{max-width:100%;font-size:11.5vw;letter-spacing:-.055em;overflow-wrap:normal}
+}
+
+@media(max-width:380px){
+  .hero-title{font-size:11.9vw}
+  .contact-title{font-size:11.2vw}
+}
