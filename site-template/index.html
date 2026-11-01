@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b0f">
+  <meta name="description" content="CodedByDefault ontwerpt en bouwt digitale producten op het snijvlak van webdesign, software, AI en IT.">
+  <title>CodedByDefault — Beyond default</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="projects.css">
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
+  <canvas id="field" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <a class="brand magnetic" href="#top" aria-label="CodedByDefault, naar boven">
+      <img class="brand-logo" src="assets/codedbydefault-logo-v02.png" alt="" width="2011" height="782">
+      <span class="brand-name">CodedByDefault</span>
+    </a>
+    <div class="status"><span></span> Available for ambitious builds</div>
+    <nav aria-label="Hoofdnavigatie">
+      <a href="#expertise">Expertise</a>
+      <a href="#projecten">Projecten</a>
+      <a href="#aanpak">Aanpak</a>
+      <a href="#contact" class="nav-cta magnetic">Start een project ↗</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="eyebrow reveal"><span>Independent digital studio</span><span>NL / EU</span></div>
+      <h1 class="hero-title" aria-label="We build beyond default">
+        <span class="line"><span>WE BUILD</span></span>
+        <span class="line outline"><span>BEYOND</span></span>
+        <span class="line offset"><span>DEFAULT<span class="dot">.</span></span></span>
+      </h1>
+      <div class="hero-bottom reveal">
+        <p>Digitale ervaringen die techniek laten <em>voelen</em>. Van scherpe strategie tot software, AI en webdesign dat niet opgaat in de massa.</p>
+        <a href="#expertise" class="scroll-cue" aria-label="Scroll naar expertise"><span>Scroll to explore</span><i>↓</i></a>
+      </div>
+      <div class="orb" aria-hidden="true"><div></div></div>
+    </section>
+
+    <section class="manifesto">
+      <p class="kicker reveal">/ 01 — De standaard voorbij</p>
+      <div class="manifesto-copy">
+        <span>Geen digitale ruis.</span>
+        <span>Geen dertien-in-een-dozijn.</span>
+        <span class="accent">Wel helder denken,</span>
+        <span class="accent">radicaal goed maken.</span>
+      </div>
+      <p class="side-note reveal">CodedByDefault combineert design, engineering en intelligente automatisering in één compacte studio.</p>
+    </section>
+
+    <section id="expertise" class="expertise">
+      <div class="section-head reveal">
+        <p class="kicker">/ 02 — Capabilities</p>
+        <h2>Vier disciplines.<br><span>Eén digitale voorsprong.</span></h2>
+      </div>
+      <div class="capability-grid">
+        <article class="cap-card active" data-mode="web">
+          <div class="cap-meta"><span>01</span><span>WEB DESIGN</span></div>
+          <h3>Websites die<br>blijven hangen.</h3>
+          <p>Distinctieve digitale identiteiten, slimme interacties en een feilloze ervaring op ieder scherm.</p>
+          <button class="cap-open" aria-label="Bekijk webdesign demo">Explore <span>↗</span></button>
+        </article>
+        <article class="cap-card" data-mode="software">
+          <div class="cap-meta"><span>02</span><span>SOFTWARE</span></div>
+          <h3>Software die<br>werk verzet.</h3>
+          <p>Doordachte tools, platformen en koppelingen die complexe processen terugbrengen tot eenvoud.</p>
+          <button class="cap-open" aria-label="Bekijk software demo">Explore <span>↗</span></button>
+        </article>
+        <article class="cap-card" data-mode="ai">
+          <div class="cap-meta"><span>03</span><span>AI SYSTEMS</span></div>
+          <h3>AI met een<br>echte taak.</h3>
+          <p>Praktische AI-assistenten en workflows die teams versterken zonder de menselijke maat te verliezen.</p>
+          <button class="cap-open" aria-label="Bekijk AI demo">Explore <span>↗</span></button>
+        </article>
+        <article class="cap-card" data-mode="it">
+          <div class="cap-meta"><span>04</span><span>IT & INTEGRATION</span></div>
+          <h3>Systemen die<br>samenwerken.</h3>
+          <p>Een solide technische basis, betrouwbare integraties en keuzes die ook morgen logisch zijn.</p>
+          <button class="cap-open" aria-label="Bekijk IT demo">Explore <span>↗</span></button>
+        </article>
+      </div>
+
+      <div class="lab reveal" id="lab">
+        <div class="lab-bar"><span><i></i><i></i><i></i></span><code>codedbydefault / capability-lab</code><b>LIVE</b></div>
+        <div class="lab-body">
+          <div class="lab-copy">
+            <span class="lab-index">01 / WEB DESIGN</span>
+            <h3 id="lab-title">Design in<br><em>motion.</em></h3>
+            <p id="lab-text">Beweeg over het canvas. Elke interactie vormt de ervaring—speels aan de voorkant, doelgericht onder de motorkap.</p>
+          </div>
+          <div class="lab-visual" id="lab-visual" aria-label="Interactieve visuele demonstratie">
+            <div class="demo-ring ring-a"></div><div class="demo-ring ring-b"></div>
+            <div class="demo-core"><img src="assets/codedbydefault-logo-v02.png" alt="" width="2011" height="782"></div>
+            <div class="code-stream" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projecten" class="projects">
+      <div class="section-head reveal">
+        <p class="kicker">/ 03 — In ontwikkeling</p>
+        <h2>Eigen producten.<br><span>Gebouwd vanuit de praktijk.</span></h2>
+      </div>
+      <div class="project-stage">
+        <article class="project project-fodmap reveal">
+          <div class="project-top"><span class="project-status"><i></i> IN DEVELOPMENT</span><span>01 / HEALTH TECH</span></div>
+          <div class="project-art fodmap-art" aria-hidden="true">
+            <div class="phone"><div class="phone-bar"><b>F</b><span>Vandaag</span><i></i></div><div class="food-card"><span>MA</span><b>Mijn dag</b><em>3 items geregistreerd</em></div><div class="food-lines"><i></i><i></i><i></i></div><div class="food-score"><span>Persoonlijk overzicht</span><strong>● ● ◦</strong></div></div>
+            <span class="float-label l1">VOEDINGSWIJZER</span><span class="float-label l2">BOODSCHAPPENLIJST</span>
+          </div>
+          <div class="project-copy"><div><p>FODMAP-TRACKER</p><h3>Meer grip op wat<br>je dagelijks eet.</h3></div><p>Een registratietool in ontwikkeling voor voeding en FODMAP-aandachtspunten, met een eigen voedingswijzer en praktische ondersteuning.</p></div>
+        </article>
+        <article class="project project-work reveal">
+          <div class="project-top"><span class="project-status"><i></i> IN DEVELOPMENT</span><span>02 / PRODUCTIVITY</span></div>
+          <div class="project-art work-art" aria-hidden="true">
+            <div class="work-grid"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="task-panel"><span>GEREGELDWERK</span><b>Alles geregeld.<br>Werk in beweging.</b><div><i></i><em>Planning bijgewerkt</em><strong>NU</strong></div><div><i></i><em>Volgende taak klaar</em><strong>09:30</strong></div></div><div class="work-orbit">✓</div>
+          </div>
+          <div class="project-copy"><div><p>GEREGELDWERK</p><h3>Rust in werk dat<br>altijd doorgaat.</h3></div><p>Een app in ontwikkeling die terugkerend werk, planning en opvolging overzichtelijk samenbrengt.</p></div>
+        </article>
+      </div>
+      <p class="project-disclaimer reveal">Projectstatus: actief in ontwikkeling. Getoonde interfaces zijn conceptuele productvisualisaties.</p>
+    </section>
+
+    <section id="aanpak" class="process">
+      <div class="section-head reveal">
+        <p class="kicker">/ 04 — Werkwijze</p>
+        <h2>Van vaag idee naar<br><span>werkend voordeel.</span></h2>
+      </div>
+      <ol class="process-list">
+        <li class="reveal"><span>01</span><h3>Vraag scherpstellen</h3><p>We zoeken eerst het echte probleem. Doel, gebruiker en techniek komen samen in een helder vertrekpunt.</p><b>DISCOVER</b></li>
+        <li class="reveal"><span>02</span><h3>Richting zichtbaar maken</h3><p>Concept, interface en architectuur worden tastbaar voordat we onnodige complexiteit bouwen.</p><b>DESIGN</b></li>
+        <li class="reveal"><span>03</span><h3>Bouwen & bewijzen</h3><p>In korte iteraties ontstaat een werkend product. Getest op gedrag, performance en echte bruikbaarheid.</p><b>BUILD</b></li>
+        <li class="reveal"><span>04</span><h3>Lanceren & verbeteren</h3><p>Na de livegang begint het leren. We meten, verfijnen en bouwen verder waar dat waarde toevoegt.</p><b>EVOLVE</b></li>
+      </ol>
+    </section>
+
+    <section class="signal">
+      <div class="signal-track" aria-hidden="true">
+        <span>DESIGN × CODE × INTELLIGENCE ×</span><span>DESIGN × CODE × INTELLIGENCE ×</span>
+      </div>
+      <div class="signal-content reveal">
+        <span class="signal-number">05</span>
+        <p>Het beste digitale werk ontstaat niet in een hokje.</p>
+        <div class="signal-orbit"><span>STRATEGY</span><span>DESIGN</span><span>CODE</span><span>AI</span><i><img src="assets/codedbydefault-logo-v02.png" alt="" width="2011" height="782"></i></div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <p class="kicker reveal">/ 06 — Let's make something</p>
+      <h2 class="contact-title reveal">HEB JE EEN IDEE<br><span>DAT NIET DEFAULT IS?</span></h2>
+      <div class="contact-row reveal">
+        <p>Vertel waar je naartoe wilt. CodedByDefault denkt mee over de slimste route van idee naar impact.</p>
+        <a class="big-cta magnetic" href="mailto:hello@codedbydefault.nl?subject=Een%20idee%20dat%20niet%20default%20is">
+          <span>Start het gesprek</span><i>↗</i>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <a class="brand" href="#top"><img class="brand-logo" src="assets/codedbydefault-logo-v02.png" alt="" width="2011" height="782"><span class="brand-name">CodedByDefault</span></a>
+    <p>IT · AI · SOFTWARE · WEB DESIGN</p>
+    <p>© <span id="year"></span> — Built beyond default.</p>
+    <p class="legal">KvK 42171617 · BTW NL005557496B77</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
