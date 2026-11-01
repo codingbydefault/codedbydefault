@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./reset.css";
 
 export const metadata: Metadata = {
@@ -27,6 +29,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body>
         {children}
+        <Analytics />
+        <SpeedInsights />
         <Script src="/site.js" strategy="afterInteractive" />
       </body>
     </html>

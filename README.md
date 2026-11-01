@@ -32,3 +32,7 @@ npm start
 - `public/`: styling, interacties en logo-assets.
 
 Het contactadres `hello@codedbydefault.nl` blijft een placeholder totdat het definitieve domein en e-mailadres zijn bevestigd.
+
+## Monitoring
+
+Vercel Web Analytics en Speed Insights zijn in de rootlayout geïntegreerd. Na iedere productie-deployment worden bezoekersstatistieken en Core Web Vitals automatisch naar het gekoppelde Vercel-project gestuurd.
