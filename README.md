@@ -31,7 +31,7 @@ npm start
 - `site-template/index.html`: inhoudelijke websitebron.
 - `public/`: styling, interacties en logo-assets.
 
-Het contactadres `hello@codedbydefault.nl` blijft een placeholder totdat het definitieve domein en e-mailadres zijn bevestigd.
+Het tijdelijke contactadres is `codedbydefault@gmail.com` totdat een eigen `@codedbydefault.com`-mailbox beschikbaar is.
 
 ## Monitoring
 
