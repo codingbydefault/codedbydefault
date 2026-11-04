@@ -21,3 +21,69 @@ const modes={
 $$('.cap-card').forEach(card=>card.addEventListener('click',()=>{const m=modes[card.dataset.mode];$$('.cap-card').forEach(c=>c.classList.remove('active'));card.classList.add('active');$('.lab-index').textContent=m.idx;$('#lab-title').innerHTML=m.title;$('#lab-text').textContent=m.text;$('#lab-visual').style.background=`radial-gradient(circle at center,${m.b}55,transparent 48%),linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px)`;$('.demo-core').style.background=`linear-gradient(135deg,${m.a},${m.b})`;$('#lab').scrollIntoView({behavior:'smooth',block:'center'})}));
 
 const visual=$('#lab-visual');visual.addEventListener('pointermove',e=>{const r=visual.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;$('.demo-core').style.transform=`translate(calc(-50% + ${x*35}px),calc(-50% + ${y*35}px)) rotate(${45+x*18}deg) scale(${1+Math.abs(x)*.08})`});visual.addEventListener('pointerleave',()=>$('.demo-core').style.transform='');
+
+const quickscanForm=$('#quickscan-form');
+if(quickscanForm){
+  quickscanForm.addEventListener('submit',event=>{
+    event.preventDefault();
+    if(!quickscanForm.reportValidity())return;
+    const data=new FormData(quickscanForm);
+    const status=$('#quickscan-status');
+    const button=quickscanForm.querySelector('button[type="submit"]');
+    button.disabled=true;
+    button.querySelector('span').textContent='Aanvraag versturen…';
+    status.textContent='Een moment, we verwerken je aanvraag veilig.';
+    status.classList.remove('is-error');
+    fetch('/api/quickscan',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(Object.fromEntries(data.entries()))
+    }).then(async response=>{
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(result.message||'Versturen is niet gelukt.');
+      quickscanForm.reset();
+      status.textContent='Bedankt! De bevestiging is onderweg. Binnen 24 uur ontvang je ons persoonlijke rapport met drie mogelijke verbeteringen.';
+      status.classList.add('is-active');
+      if(typeof window.va==='function')window.va('event',{name:'Quickscan aangevraagd'});
+    }).catch(error=>{
+      status.textContent=`${error.message} Probeer het opnieuw of mail naar codedbydefault@gmail.com.`;
+      status.classList.add('is-error');
+    }).finally(()=>{
+      button.disabled=false;
+      button.querySelector('span').textContent='Vraag mijn quickscan aan';
+    });
+  });
+}
+
+const guideForm=$('#guide-form');
+if(guideForm){
+  guideForm.addEventListener('submit',event=>{
+    event.preventDefault();
+    if(!guideForm.reportValidity())return;
+    const data=new FormData(guideForm);
+    const status=$('#guide-status');
+    const button=guideForm.querySelector('button[type="submit"]');
+    button.disabled=true;
+    button.querySelector('span').textContent='Gids versturen…';
+    status.textContent='Een moment, we maken je downloadmail klaar.';
+    status.classList.remove('is-success','is-error');
+    fetch('/api/guide',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(Object.fromEntries(data.entries()))
+    }).then(async response=>{
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(result.message||'Versturen is niet gelukt.');
+      guideForm.reset();
+      status.textContent='Gelukt! Controleer je inbox voor de downloadlink. Kijk ook even bij ongewenste e-mail.';
+      status.classList.add('is-success');
+      if(typeof window.va==='function')window.va('event',{name:'AI-gids aangevraagd'});
+    }).catch(error=>{
+      status.textContent=`${error.message} Probeer het opnieuw of mail naar codedbydefault@gmail.com.`;
+      status.classList.add('is-error');
+    }).finally(()=>{
+      button.disabled=false;
+      button.querySelector('span').textContent='Stuur de gids naar mijn inbox';
+    });
+  });
+}
