@@ -9,15 +9,16 @@
 /* Keep display typography fully inside narrow iPhone and in-app browser viewports. */
 @media(max-width:600px){
   html,body,body>div{max-width:100%;overflow-x:clip}
-  .hero-title{font-size:12.2vw;letter-spacing:-.055em}
+  .hero-title{width:100%;font-size:11.6vw;letter-spacing:-.045em}
   .hero-title .line,.hero-title .line>span{max-width:100%}
   .contact{overflow:hidden}
-  .contact-title{max-width:100%;font-size:11.5vw;letter-spacing:-.055em;overflow-wrap:normal}
+  .contact-title{width:100%;max-width:100%;font-size:9.5vw;letter-spacing:-.045em;overflow-wrap:normal}
+  .contact-title>span,.contact-title .mobile-line{display:block;max-width:100%}
 }
 
 @media(max-width:380px){
-  .hero-title{font-size:11.9vw}
-  .contact-title{font-size:11.2vw}
+  .hero-title{font-size:11.2vw}
+  .contact-title{font-size:9.1vw}
 }
 
 /* Free website quickscan */
