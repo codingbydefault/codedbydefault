@@ -5,9 +5,11 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./reset.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.codedbydefault.com"),
   title: "CodedByDefault — Beyond default",
   description:
     "CodedByDefault ontwerpt en bouwt digitale producten op het snijvlak van webdesign, software, AI en IT.",
+  alternates: { canonical: "/" },
   icons: { icon: "/assets/codedbydefault-logo-v02.png" },
 };
 
