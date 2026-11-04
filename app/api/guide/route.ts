@@ -4,7 +4,7 @@ export const runtime = "nodejs";
 
 const RESEND_ENDPOINT = "https://api.resend.com/emails";
 const OWNER_EMAIL = "codedbydefault@gmail.com";
-const GUIDE_PATH = "/downloads/codedbydefault-mkb-ai-automatiseringsgids-2026.pdf";
+const GUIDE_PATH = "/downloads/codedbydefault-cbd-ai-automatiseringsgids-2026.pdf";
 
 function clean(value: unknown, maxLength: number) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     const receivedAt = new Date().toISOString();
     const guideUrl = new URL(GUIDE_PATH, request.nextUrl.origin).toString();
     const safeName = escapeHtml(name);
-    const leadRecord = { schema: "codedbydefault.guide-lead.v1", requestId, receivedAt, status: "guide_sent", name, email, guide: "mkb-ai-automatiseringsgids-2026" };
+    const leadRecord = { schema: "codedbydefault.guide-lead.v1", requestId, receivedAt, status: "guide_sent", name, email, guide: "cbd-ai-automatiseringsgids-2026" };
 
     await Promise.all([
       sendEmail({
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
         to: [email],
         reply_to: OWNER_EMAIL,
         subject: "Jouw CodedByDefault AI- & Automatiseringsgids",
-        text: `Hallo ${name},\n\nBedankt voor je aanvraag. Download hier de MKB AI- & Automatiseringsgids 2026:\n${guideUrl}\n\nJe ontvangt van ons geen automatische nieuwsbrief.\n\nMet vriendelijke groet,\nCodedByDefault`,
+        text: `Hallo ${name},\n\nBedankt voor je aanvraag. Download hier de CBD AI- & Automatiseringsgids 2026:\n${guideUrl}\n\nJe ontvangt van ons geen automatische nieuwsbrief.\n\nMet vriendelijke groet,\nCodedByDefault`,
         html: `<div style="margin:0;background:#0b0d12;padding:40px 20px;font-family:Arial,sans-serif;color:#f6f4ee"><div style="max-width:620px;margin:auto;border:1px solid #30343c;border-radius:14px;overflow:hidden"><div style="padding:34px;background:#c7ff35;color:#090b0f"><p style="margin:0 0 12px;font-size:12px;letter-spacing:2px;text-transform:uppercase">CodedByDefault / Gratis gids</p><h1 style="margin:0;font-size:30px;line-height:1.08">Jouw gids staat klaar.</h1></div><div style="padding:34px"><p>Hallo ${safeName},</p><p style="line-height:1.7;color:#c7cad0">Ontdek tien praktische kansen om bedrijfsprocessen slimmer in te richten met maatwerksoftware en AI.</p><p style="margin:30px 0"><a href="${guideUrl}" style="display:inline-block;background:#765cff;color:#fff;text-decoration:none;border-radius:999px;padding:16px 24px;font-weight:bold">Download de gids</a></p><p style="font-size:12px;line-height:1.6;color:#838892">Je ontvangt van ons geen automatische nieuwsbrief. Je e-mailadres is alleen gebruikt om deze gids te versturen.</p><p style="margin-top:30px">Met vriendelijke groet,<br><strong>CodedByDefault</strong></p></div></div></div>`,
       }, apiKey),
       sendEmail({

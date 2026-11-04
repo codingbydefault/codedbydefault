@@ -44,9 +44,9 @@ Kopieer lokaal `.env.example` naar `.env.local` en vervang de voorbeeldwaarden. 
 
 De interne aanvraagmail is voorbereid op toekomstige Grokbot-verwerking. Iedere aanvraag bevat een uniek aanvraagnummer, herkenbare onderwerp-prefix, vaste headers en een `codedbydefault.quickscan.v1` JSON-record. De bot- en databasekoppeling gelden pas als actief nadat ontvangen, beantwoorden, opslaan en rapporteren end-to-end zijn getest.
 
-## Downloadbare MKB-gids
+## Downloadbare CBD-gids
 
-De website bevat een leadkaart voor de MKB AI- & Automatiseringsgids 2026. De bezoeker ontvangt de downloadlink uitsluitend via het opgegeven e-mailadres. Dezelfde Resend-variabelen worden gebruikt als voor de quickscan. CodedByDefault ontvangt daarnaast een gestructureerd `codedbydefault.guide-lead.v1` record voor toekomstige verwerking door LISA. Een gidsaanvraag is geen nieuwsbriefinschrijving.
+De website bevat een leadkaart voor de CBD AI- & Automatiseringsgids 2026. De bezoeker ontvangt de downloadlink uitsluitend via het opgegeven e-mailadres. Dezelfde Resend-variabelen worden gebruikt als voor de quickscan. CodedByDefault ontvangt daarnaast een gestructureerd `codedbydefault.guide-lead.v1` record voor toekomstige verwerking door LISA. Een gidsaanvraag is geen nieuwsbriefinschrijving.
 
 ## Monitoring
 
