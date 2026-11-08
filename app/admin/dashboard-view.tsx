@@ -1,5 +1,6 @@
 import { logout, updateProject } from "./actions";
 import { SubmitButton } from "./submit-button";
+import { SITE_LABELS, SITE_SLUGS, type SiteSlug } from "../../lib/analytics/sites";
 import { formatDateTime, formatDayLabel, formatNumber, formatPercent } from "../../lib/admin/format";
 import type { DashboardModel } from "../../lib/admin/model";
 import type { MetricSet, VisitorPoint } from "../../lib/admin/metrics";
@@ -108,6 +109,14 @@ function VisitorChart({ points }: { points: VisitorPoint[] }) {
   );
 }
 
+function dashboardHref(basePath: string, options: { hideTests: boolean; site: SiteSlug | "all" }) {
+  const params = new URLSearchParams();
+  if (!options.hideTests) params.set("tests", "tonen");
+  if (options.site !== "all") params.set("bezoekers", options.site);
+  const query = params.toString();
+  return query ? `${basePath}?${query}` : basePath;
+}
+
 function ProjectEditor({ project, open }: { project: ProjectCard; open: boolean }) {
   const href = safeHttpUrl(project.url);
   return (
@@ -170,7 +179,8 @@ export function DashboardView({
   editingSlug?: string | null;
   savedSlug?: string | null;
 }) {
-  const testsHref = hideTests ? `${basePath}?tests=tonen` : basePath;
+  const testsHref = dashboardHref(basePath, { hideTests: !hideTests, site: model.selectedSite });
+  const selectedSummary = model.siteSummaries.find((summary) => summary.site === model.selectedSite) ?? model.siteSummaries[0];
   return (
     <AdminShell email={email}>
       <div className="page-head">
@@ -191,14 +201,22 @@ export function DashboardView({
         <div className="panel">
           <div className="panel-head">
             <h2>Bezoekers per dag</h2>
-            <p>{formatNumber(model.conversion.days30.visitors)} unieke bezoekers · {formatNumber(model.pageviews30)} paginaweergaven in 30 dagen</p>
+            <p>{formatNumber(selectedSummary?.days30 ?? 0)} unieke bezoekers · {formatNumber(selectedSummary?.pageviews30 ?? model.pageviews30)} paginaweergaven in 30 dagen</p>
           </div>
+          <nav className="site-switch" aria-label="Kies een site">
+            {(["all", ...SITE_SLUGS] as const).map((site) => (
+              <a key={site} href={dashboardHref(basePath, { hideTests, site })} className={site === model.selectedSite ? "is-active" : undefined} aria-current={site === model.selectedSite ? "page" : undefined}>
+                {SITE_LABELS[site]}
+              </a>
+            ))}
+          </nav>
           <VisitorChart points={model.visitors} />
-          <p className="fine">Geen cookies en geen IP-adressen. Dezelfde browser telt elke dag opnieuw als één bezoeker. Bots en prefetch worden overgeslagen.</p>
+          <p className="fine">Geen cookies en geen IP-adressen. Dezelfde browser telt elke dag opnieuw als één bezoeker. Het totaal telt iemand die dag één keer, ook als die meerdere sites bezoekt. Bots en prefetch worden overgeslagen.</p>
+          {model.visitsNotice ? <p className="fine">{model.visitsNotice}</p> : null}
         </div>
         <aside className="panel conversion">
           <h2>Bezoeker naar aanvraag</h2>
-          <p>Gidsaanvragen en quickscans gedeeld door de som van de dagelijkse unieke bezoekers.</p>
+          <p>Gidsaanvragen en quickscans gedeeld door de dagelijkse unieke bezoekers van CodedByDefault.</p>
           <dl>
             <div>
               <dt>7 dagen</dt>
@@ -212,6 +230,34 @@ export function DashboardView({
             </div>
           </dl>
         </aside>
+      </section>
+      <section className="panel">
+        <div className="panel-head">
+          <h2>Bezoekers per project</h2>
+          <p>Vandaag, 7 dagen en 30 dagen. Dezelfde persoon telt per project apart.</p>
+        </div>
+        <div className="table-wrap">
+          <table className="visit-table">
+            <thead>
+              <tr>
+                <th>Project</th>
+                <th>Vandaag</th>
+                <th>7 dagen</th>
+                <th>30 dagen</th>
+              </tr>
+            </thead>
+            <tbody>
+              {model.siteSummaries.map((summary) => (
+                <tr key={summary.site} className={summary.site === model.selectedSite ? "is-selected" : undefined}>
+                  <th scope="row"><a href={dashboardHref(basePath, { hideTests, site: summary.site })}>{summary.label}</a></th>
+                  <td>{formatNumber(summary.today)}</td>
+                  <td>{formatNumber(summary.days7)}</td>
+                  <td>{formatNumber(summary.days30)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
       <section className="panel">
         <div className="panel-head">

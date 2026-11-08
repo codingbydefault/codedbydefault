@@ -56,14 +56,37 @@ Het pdf-bestand staat niet meer in `public/`. Zowel nieuwe links (met een persoo
 
 De bezoeker-telling gebruikt geen cookies en bewaart geen IP-adres. Per Amsterdamse dag wordt een HMAC-hash van salt, IP en user-agent opgeslagen, zodat dezelfde browser die dag één bezoeker is en de volgende dag een nieuwe hash krijgt.
 
+`POST /api/collect` telt ook de andere sites, met dezelfde salt (`ANALYTICS_SALT`, geen nieuwe variabele). De body is JSON, ook als `text/plain` voor `navigator.sendBeacon`:
+
+```json
+{"site":"fodmap","path":"/pad","referrer":"https://example.com"}
+```
+
+De slug telt alleen als de `Origin`-header bij die site hoort. Toegestaan zijn `codedbydefault` (www.codedbydefault.com, codedbydefault.com, codedbydefault.vercel.app), `fodmap` (www.fodmaptracker.eu, fodmaptracker.eu, fodmaptracker20.vercel.app), `bumperbank` (www.debumperbank.nl, debumperbank.nl, dbb-tan.vercel.app) en `geregeldwerk` (geregeldwerk.vercel.app en geregeldwerk.nl/.com/.be/.app, met en zonder www). Het antwoord is altijd 204. Bots worden genegeerd. Dezelfde bezoeker, site en pad telt hoogstens één keer per kwartier. De eigen site blijft via `/api/bezoek` onder de slug `codedbydefault` tellen.
+
+In het beheer staan de bezoekers per project voor vandaag, 7 dagen en 30 dagen, plus het totaal. De grafiek wisselt van site. Het totaal telt iemand die dag één keer, ook over sites heen. De conversie gebruikt alleen de bezoekers van CodedByDefault.
+
 Vercel Web Analytics blijft apart in het Vercel-dashboard. Die cijfers zijn niet in deze app uit te lezen.
 
 ### Supabase-project
 
-Er is nog geen Supabase-project aan deze site gekoppeld. Maak een **nieuw** project aan, bijvoorbeeld met de naam `codedbydefault`, in het Supabase-account van Gomez. Gebruik geen bestaand project van een andere app: de aanvragen en de beheerlogin horen bij deze site. Een project dat je al alleen voor CodedByDefault hebt leeggemaakt, mag ook.
+Het live project is `ucrmvdwnpdnukkeogfgr`. De migratie `20261107112115_admin_dashboard` is daar al uitgevoerd. Voor de telling per site plak je daarna `supabase/migrations/20261108091833_site_visits.sql` in één keer in de SQL Editor en kies je Run. Die migratie voegt alleen een sitekolom en tel-functies toe; bestaande rijen blijven staan en krijgen de site `codedbydefault`. Er zijn geen nieuwe omgevingsvariabelen.
+
+Zo controleer je het daarna, zonder iets in Vercel of Supabase-instellingen te wijzigen:
+
+```bash
+curl -i -X POST https://www.codedbydefault.com/api/collect \
+  -H 'Origin: https://www.fodmaptracker.eu' \
+  -H 'Content-Type: text/plain' \
+  --data '{"site":"fodmap","path":"/"}'
+```
+
+Een passend origin en slug geven 204 en een regel in het beheer. Een andere slug bij dezelfde origin geeft ook 204, maar wordt niet opgeslagen. Open daarna `/admin` en kies FODMAP-tracker bij de grafiek.
+
+De stappen hieronder beschrijven hoe het project de eerste keer is opgezet.
 
 1. Maak het project aan in het [Supabase-dashboard](https://supabase.com/dashboard). Kies een regio dicht bij Nederland.
-2. Draai de migratie `supabase/migrations/20261107112115_admin_dashboard.sql` in **SQL Editor → New query**. Plak het hele bestand en kies Run. Daarmee komen de tabellen, RLS en de zes startprojecten binnen.
+2. De eerste migratie `supabase/migrations/20261107112115_admin_dashboard.sql` is op het live project al gedraaid. Voor een leeg nieuw project plak je dat bestand in **SQL Editor → New query** en kies je Run. De telling per site komt uit het aparte bestand `20261108091833_site_visits.sql`.
    Alternatief met de CLI, nadat je het project hebt gelinkt: `npx supabase link --project-ref <project-ref>` en daarna `npx supabase db push`. Doe dit alleen tegen het nieuwe project, niet tegen een database die al ergens anders voor in gebruik is.
 3. Zet onder **Authentication → Sign In / Providers** e-mail aan. Zet **Allow new users to sign up** uit, zodat onbekenden geen account kunnen aanmaken.
 4. Maak onder **Authentication → Users** handmatig het account van Gomez aan en bevestig het e-mailadres. Zet datzelfde adres in `ADMIN_EMAILS`.

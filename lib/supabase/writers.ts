@@ -53,13 +53,32 @@ export function downloadRecorder(): DownloadRecorder | null {
   };
 }
 
+const DEDUPE_WINDOW_MS = 15 * 60 * 1000;
+
 export function pageViewWriter(): PageViewWriter | null {
   const client = createAdminClient();
   if (!client) return null;
   return {
+    async findRecentDuplicate(row) {
+      const since = new Date(Date.now() - DEDUPE_WINDOW_MS).toISOString();
+      const { data, error } = await client
+        .from("page_views")
+        .select("id")
+        .eq("site", row.site)
+        .eq("visitor_hash", row.visitor_hash)
+        .eq("path", row.path)
+        .gte("created_at", since)
+        .limit(1);
+      if (error) return false;
+      return Array.isArray(data) && data.length > 0;
+    },
     async insertPageView(row) {
-      const { error } = await client.from("page_views").insert(row);
-      return error ? { message: error.message } : null;
+      const first = await client.from("page_views").insert(row);
+      if (!first.error) return null;
+      if (!/site/i.test(first.error.message)) return { message: first.error.message };
+      const { site: _site, ...legacy } = row;
+      const second = await client.from("page_views").insert(legacy);
+      return second.error ? { message: second.error.message } : null;
     },
   };
 }

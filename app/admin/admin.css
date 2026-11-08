@@ -147,6 +147,19 @@ td a { color: #c7ff35; }
 .project-card form button,
 .login-card button { justify-self: start; }
 
+.site-switch { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.site-switch a {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 8px 12px;
+  text-decoration: none;
+  font-size: 13px;
+}
+.site-switch a.is-active { background: #c7ff35; color: #080a0e; border-color: #c7ff35; font-weight: 700; }
+.visit-table tr.is-selected th,
+.visit-table tr.is-selected td { color: #c7ff35; }
+.visit-table th a { text-decoration: none; }
+
 .notice { border-radius: 12px; padding: 12px 14px; }
 .notice-ok { background: rgba(199, 255, 53, 0.12); color: #e8ffb0; }
 .notice-error { background: rgba(255, 92, 53, 0.12); color: #ffd0c4; }

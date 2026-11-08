@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { parseSiteSelection } from "../../../lib/analytics/sites";
 import { createSampleDashboard } from "../../../lib/admin/sample";
 import { DashboardView } from "../dashboard-view";
 
@@ -18,7 +19,7 @@ export default async function PreviewPage({
   const hideTests = one(params.tests) !== "tonen";
   return (
     <DashboardView
-      model={createSampleDashboard(new Date(), hideTests)}
+      model={createSampleDashboard(new Date(), hideTests, parseSiteSelection(one(params.bezoekers)))}
       email="codedbydefault@gmail.com"
       hideTests={hideTests}
       basePath="/admin/voorbeeld"

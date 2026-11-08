@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { buildPageView, dailyVisitorHash, isBotUserAgent, normalizePagePath, readClientIp, shouldCountDownload, signalsFromHeaders } from "../lib/analytics/privacy";
-import { persistPageView } from "../lib/analytics/persist";
+import { persistPageView, type PageViewWriter } from "../lib/analytics/persist";
 
 const SALT = "dit-is-een-lange-test-salt";
 const NOW = new Date("2026-11-07T11:13:00.000Z");
@@ -67,7 +67,8 @@ test("een paginaweergave bewaart alleen pad, dag en hash", () => {
     ip: "203.0.113.55",
     now: NOW,
   });
-  assert.deepEqual(Object.keys(stored ?? {}).sort(), ["day", "path", "visitor_hash"]);
+  assert.deepEqual(Object.keys(stored ?? {}).sort(), ["day", "path", "site", "visitor_hash"]);
+  assert.equal(stored?.site, "codedbydefault");
   assert.equal(stored?.path, "/");
   assert.equal(stored?.day, "2026-11-07");
   assert.equal(JSON.stringify(stored).includes("203.0.113.55"), false);
@@ -97,21 +98,39 @@ test("het IP wordt alleen uit het eerste doorstuuradres gelezen", () => {
 });
 
 test("een paginaweergave wordt overgeslagen zonder schrijver of bij een bot", async () => {
-  const calls: unknown[] = [];
+  let inserted = false;
   const skipped = await persistPageView(null, {
+    site: "codedbydefault",
     path: "/",
     day: "2026-11-07",
     visitor_hash: "a".repeat(32),
   });
   assert.deepEqual(skipped, { ok: true, skipped: true });
   const stored = await persistPageView({
-    async insertPageView(row) {
-      calls.push(row);
+    async insertPageView() {
+      inserted = true;
       return null;
     },
   }, null);
   assert.deepEqual(stored, { ok: true, skipped: true });
-  assert.deepEqual(calls, []);
+  assert.equal(inserted, false);
+  const duplicateWriter: PageViewWriter = {
+    async findRecentDuplicate() {
+      return true;
+    },
+    async insertPageView() {
+      inserted = true;
+      return null;
+    },
+  };
+  const duplicate = await persistPageView(duplicateWriter, {
+    site: "codedbydefault",
+    path: "/",
+    day: "2026-11-07",
+    visitor_hash: "b".repeat(32),
+  });
+  assert.deepEqual(duplicate, { ok: true, skipped: true });
+  assert.equal(inserted, false);
 });
 
 test("headers worden tot signalen genormaliseerd", () => {

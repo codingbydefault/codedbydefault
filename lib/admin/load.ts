@@ -1,6 +1,7 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAdminClient } from "../supabase/admin";
+import { type SiteSlug } from "../analytics/sites";
 import { assembleDashboard, type DashboardModel } from "./model";
 import { recentRequests, type MetricSet, type RecentRequest, type VisitorPoint } from "./metrics";
 import { PROJECT_STATUSES, type ProjectCard, type ProjectStatus } from "./projects";
@@ -72,7 +73,46 @@ function asVisits(data: unknown): VisitorPoint[] {
   });
 }
 
-export async function loadDashboard(hideTests: boolean, now = new Date()): Promise<DashboardResult> {
+function isMissingVisitScope(message: string) {
+  return /admin_visit_scopes|schema cache|Could not find the function|PGRST202|42883/i.test(message);
+}
+
+async function loadVisitScopes(client: SupabaseClient, fromDay: string, selected: SiteSlug | "all") {
+  const scoped = await client.rpc("admin_visit_scopes", { from_day: fromDay });
+  if (!scoped.error) {
+    const byScope = new Map<string, VisitorPoint[]>();
+    for (const row of Array.isArray(scoped.data) ? scoped.data : []) {
+      if (!row || typeof row !== "object") continue;
+      const record = row as Record<string, unknown>;
+      const scope = typeof record.scope === "string" ? record.scope : "";
+      const point = asVisits([record])[0];
+      if (!scope || !point) continue;
+      const list = byScope.get(scope) ?? [];
+      list.push(point);
+      byScope.set(scope, list);
+    }
+    const selectedRows = byScope.get(selected) ?? [];
+    const ownRows = byScope.get("codedbydefault") ?? [];
+    return { siteSeries: byScope, visits: selectedRows, ownSiteVisitors: ownRows, visitsNotice: null };
+  }
+  if (!isMissingVisitScope(scoped.error.message)) throw new Error(scoped.error.message);
+
+  const legacy = await client.rpc("admin_daily_visits", { from_day: fromDay });
+  if (legacy.error) throw new Error(legacy.error.message);
+  const rows = asVisits(legacy.data);
+  const siteSeries = new Map<string, VisitorPoint[]>([
+    ["all", rows],
+    ["codedbydefault", rows],
+  ]);
+  return {
+    siteSeries,
+    visits: selected === "all" || selected === "codedbydefault" ? rows : [],
+    ownSiteVisitors: rows,
+    visitsNotice: "De telling per site staat aan nadat de nieuwe migratie is gedraaid. Tot die tijd zie je alleen CodedByDefault.",
+  };
+}
+
+export async function loadDashboard(hideTests: boolean, selected: SiteSlug | "all" = "all", now = new Date()): Promise<DashboardResult> {
   const client = createAdminClient();
   if (!client) return { ok: false, reason: "niet-geconfigureerd" };
 
@@ -94,17 +134,17 @@ export async function loadDashboard(hideTests: boolean, now = new Date()): Promi
       scansQuery = scansQuery.eq("is_test", false);
     }
 
-    const [guides, quickscans, downloads, guideRows, scanRows, visitRows, projectRows] = await Promise.all([
+    const [guides, quickscans, downloads, guideRows, scanRows, visitScopes, projectRows] = await Promise.all([
       metricSet(client, "guide_requests", starts, hideTests),
       metricSet(client, "quickscan_requests", starts, hideTests),
       metricSet(client, "guide_downloads", starts, false),
       guidesQuery,
       scansQuery,
-      client.rpc("admin_daily_visits", { from_day: fromDay }),
+      loadVisitScopes(client, fromDay, selected),
       client.from("projects").select("slug, name, summary, status, progress, url, sort_order").order("sort_order", { ascending: true }),
     ]);
 
-    for (const result of [guideRows, scanRows, visitRows, projectRows]) {
+    for (const result of [guideRows, scanRows, projectRows]) {
       if (result.error) throw new Error(result.error.message);
     }
 
@@ -152,7 +192,11 @@ export async function loadDashboard(hideTests: boolean, now = new Date()): Promi
         guides,
         quickscans,
         downloads,
-        visits: asVisits(visitRows.data),
+        visits: visitScopes.visits,
+        ownSiteVisitors: visitScopes.ownSiteVisitors,
+        selectedSite: selected,
+        siteSeries: visitScopes.siteSeries,
+        visitsNotice: visitScopes.visitsNotice,
         requests: recentRequests(requests),
         projects,
       }),

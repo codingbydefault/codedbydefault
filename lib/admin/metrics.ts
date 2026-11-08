@@ -54,6 +54,17 @@ export function sumVisitors(series: readonly VisitorPoint[]) {
   return series.reduce((total, point) => total + point.visitors, 0);
 }
 
+export function summarizeVisitorSeries(series: readonly VisitorPoint[]) {
+  const days30 = series.slice(-30);
+  const today = series.at(-1);
+  return {
+    today: today?.visitors ?? 0,
+    days7: sumVisitors(series.slice(-7)),
+    days30: sumVisitors(days30),
+    pageviews30: days30.reduce((total, point) => total + point.pageviews, 0),
+  };
+}
+
 export function conversionRate(requests: number, visitors: number) {
   if (visitors <= 0) return null;
   return requests / visitors;

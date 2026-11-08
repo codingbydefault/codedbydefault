@@ -1,5 +1,6 @@
 import { requireAdmin } from "../../lib/admin/access";
 import { loadDashboard } from "../../lib/admin/load";
+import { parseSiteSelection } from "../../lib/analytics/sites";
 import { AdminShell, DashboardView } from "./dashboard-view";
 
 function one(value: string | string[] | undefined) {
@@ -31,7 +32,7 @@ export default async function AdminPage({
   const admin = await requireAdmin();
   const params = await searchParams;
   const hideTests = one(params.tests) !== "tonen";
-  const result = await loadDashboard(hideTests);
+  const result = await loadDashboard(hideTests, parseSiteSelection(one(params.bezoekers)));
   if (!result.ok) {
     return (
       <AdminShell email={admin.email}>

@@ -1,6 +1,7 @@
 import { isTestRequest } from "./test-requests";
 import { addCalendarDays, amsterdamDayKey, startOfAmsterdamDay } from "./time";
 import { recentRequests, summarizeRows, type RecentRequest, type VisitorPoint } from "./metrics";
+import { SITE_SLUGS, parseSiteSelection, type SiteSlug } from "../analytics/sites";
 import { assembleDashboard } from "./model";
 import { STARTER_PROJECTS } from "./projects";
 
@@ -41,16 +42,41 @@ function stamp(now: Date, daysAgo: number, hour: number, minute: number) {
 }
 
 export function createSampleVisits(now: Date): VisitorPoint[] {
-  const end = amsterdamDayKey(now);
-  return Array.from({ length: 30 }, (_, index) => {
-    const day = addCalendarDays(end, -29 + index);
-    const visitors = Math.max(8, Math.round(16 + index * 0.7 + 7 * Math.sin(index / 2.5)));
-    const pageviews = Math.round(visitors * (1.35 + (index % 4) * 0.12));
-    return { day, visitors, pageviews };
-  });
+  return createSampleSiteSeries(now).codedbydefault;
 }
 
-export function createSampleDashboard(now: Date, hideTests: boolean) {
+const SITE_WEIGHTS: Record<SiteSlug, number> = {
+  codedbydefault: 1,
+  fodmap: 0.62,
+  bumperbank: 0.4,
+  geregeldwerk: 0.22,
+};
+
+export function createSampleSiteSeries(now: Date) {
+  const end = amsterdamDayKey(now);
+  const bySite = Object.fromEntries(SITE_SLUGS.map((site) => [site, [] as VisitorPoint[]])) as Record<SiteSlug, VisitorPoint[]>;
+  const all: VisitorPoint[] = [];
+  for (let index = 0; index < 30; index += 1) {
+    const day = addCalendarDays(end, -29 + index);
+    const base = Math.max(8, Math.round(16 + index * 0.7 + 7 * Math.sin(index / 2.5)));
+    let pageviews = 0;
+    let visitorSum = 0;
+    let visitorMax = 0;
+    for (const site of SITE_SLUGS) {
+      const visitors = Math.max(1, Math.round(base * SITE_WEIGHTS[site]));
+      const views = Math.round(visitors * (1.35 + (index % 4) * 0.12));
+      bySite[site].push({ day, visitors, pageviews: views });
+      pageviews += views;
+      visitorSum += visitors;
+      visitorMax = Math.max(visitorMax, visitors);
+    }
+    const overlap = visitorSum - visitorMax;
+    all.push({ day, pageviews, visitors: visitorMax + Math.round(overlap * 0.45) });
+  }
+  return { ...bySite, all };
+}
+
+export function createSampleDashboard(now: Date, hideTests: boolean, selected: SiteSlug | "all" = "all") {
   const stamped = SAMPLE_LEADS.map((lead, index) => {
     const createdAt = stamp(now, lead.daysAgo, lead.hour, lead.minute);
     const isTest = isTestRequest(lead);
@@ -72,13 +98,21 @@ export function createSampleDashboard(now: Date, hideTests: boolean) {
     isTest: lead.isTest,
   }));
 
+  const sites = createSampleSiteSeries(now);
+  const choice = parseSiteSelection(selected);
   return assembleDashboard({
     now,
     hideTests,
     guides: summarizeRows(guides, now, hideTests),
     quickscans: summarizeRows(quickscans, now, hideTests),
     downloads: summarizeRows(downloads, now, false),
-    visits: createSampleVisits(now),
+    visits: choice === "all" ? sites.all : sites[choice],
+    ownSiteVisitors: sites.codedbydefault,
+    selectedSite: choice,
+    siteSeries: new Map<string, VisitorPoint[]>([
+      ["all", sites.all],
+      ...SITE_SLUGS.map((site) => [site, sites[site]] as const),
+    ]),
     requests: recentRequests(requests),
     projects: STARTER_PROJECTS.map((project) => ({ ...project })),
   });

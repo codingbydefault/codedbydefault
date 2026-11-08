@@ -73,6 +73,7 @@ export function normalizePagePath(value: unknown) {
 }
 
 export type PageViewInsert = {
+  site: "codedbydefault";
   path: string;
   day: string;
   visitor_hash: string;
@@ -94,6 +95,7 @@ export function buildPageView(input: {
   if (!path || salt.length < 16) return null;
   const day = amsterdamDayKey(input.now);
   return {
+    site: "codedbydefault",
     path,
     day,
     visitor_hash: dailyVisitorHash({
