@@ -7,7 +7,7 @@ export default function SiteLayout({ children }: Readonly<{ children: React.Reac
   return (
     <>
       <link rel="stylesheet" href="/styles.css?v=20261104-3" />
-      <link rel="stylesheet" href="/projects.css?v=20261104-2" />
+      <link rel="stylesheet" href="/projects.css?v=20261114-1" />
       {children}
       <PageviewBeacon />
       <Analytics />
