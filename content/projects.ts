@@ -7,7 +7,8 @@ export type ProjectPlacement = "featured" | "card" | "admin";
 export type ProjectVisual =
   | { type: "logo"; src: string; alt: string; width: number; height: number }
   | { type: "screenshot"; src: string; alt: string; width: number; height: number }
-  | { type: "initials"; letters: string };
+  | { type: "initials"; letters: string }
+  | { type: "tag"; mark: string; subtitle: string };
 
 /**
  * Eén lijst voor de homepage en het beheer.
@@ -73,8 +74,8 @@ export const CATALOG_PROJECTS: readonly CatalogProject[] = [
   {
     slug: "bumpr",
     name: "BUMPR",
-    summary:
-      "De eigen detailingproducten en productlijn van De Bumperbank. In ontwikkeling. Nog geen publieke site.",
+    summary: "Het eigen detailingmerk van De Bumperbank. Binnenkort verkrijgbaar via de webshop.",
+    // Nog geen link. Zet later `url` op de webshop; `hrefLabel` verschijnt dan vanzelf.
     url: null,
     status: "in_ontwikkeling",
     progress: 0,
@@ -82,9 +83,9 @@ export const CATALOG_PROJECTS: readonly CatalogProject[] = [
     featured: false,
     placement: "card",
     publicLabel: "Binnenkort",
-    cardTitle: "Eigen detailinglijn.",
-    hrefLabel: null,
-    visual: { type: "initials", letters: "BU" },
+    cardTitle: "Het eigen detailingmerk.",
+    hrefLabel: "Bekijk in de webshop",
+    visual: { type: "tag", mark: "BUMPR", subtitle: "PREMIUM CAR CARE" },
   },
   {
     slug: "fodmap-tracker",

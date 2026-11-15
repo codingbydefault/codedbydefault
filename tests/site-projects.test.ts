@@ -27,16 +27,23 @@ test("de kaarten blijven eerlijk over status en links", () => {
   const bumper = HOME_CARDS.find((project) => project.slug === "de-bumperbank");
   const plainwork = HOME_CARDS.find((project) => project.slug === "plainwork-studio");
   assert.equal(bumpr?.url, null);
+  assert.equal(bumpr?.hrefLabel, "Bekijk in de webshop");
   assert.equal(bumpr?.publicLabel, "Binnenkort");
+  assert.match(bumpr?.summary ?? "", /Binnenkort verkrijgbaar via de webshop/);
   assert.match(bumper?.summary ?? "", /nog niet mogelijk/);
   assert.equal(plainwork?.url, "https://plainwork-studio.vercel.app/");
   const html = `${renderFeaturedProject()}\n${renderProjectSection()}`;
-  assert.match(html, /<h1 id="defaultstackr-title">DefaultStackr<\/h1>/);
+  assert.match(html, /Build\. Deploy\./);
+  assert.match(html, /Default<span>Stackr<\/span>/);
+  assert.match(html, /Nu in ontwikkeling/);
   assert.match(html, /href="https:\/\/www\.defaultstackr\.cloud\/"/);
   assert.match(html, /Nog geen live dienst/);
   assert.match(html, /de-bumperbank\.svg/);
+  assert.match(html, /PREMIUM CAR CARE/);
   assert.equal(html.includes('href=""'), false);
-  assert.match(html, /Nog geen publieke site/);
+  const bumprHtml = html.split('class="project project-bumpr')[1]?.split("</article>")[0] ?? "";
+  assert.equal(bumprHtml.includes("href="), false);
+  assert.match(bumprHtml, /Binnenkort verkrijgbaar via de webshop/);
 });
 
 test("de migratie voegt featured toe en overschrijft geen voortgang", () => {

@@ -27,13 +27,16 @@ function renderVisual(project: CatalogProject) {
     if (!href) return `<div class="project-visual is-screenshot">${image}</div>`;
     return `<a class="project-visual is-screenshot" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${image}</a>`;
   }
+  if (visual.type === "tag") {
+    return `<div class="project-visual is-tag" aria-hidden="true"><span class="tag-hole"></span><p class="tag-mark">${escapeHtml(visual.mark)}</p><p class="tag-sub">${escapeHtml(visual.subtitle)}</p></div>`;
+  }
   return `<div class="project-visual is-initials" aria-hidden="true"><span>${escapeHtml(visual.letters)}</span></div>`;
 }
 
 function renderCard(project: CatalogProject) {
-  const href = project.url && project.hrefLabel
-    ? `<a class="project-link" href="${escapeHtml(safeHttpUrl(project.url))}" target="_blank" rel="noopener noreferrer">${escapeHtml(project.hrefLabel)} <span aria-hidden="true">↗</span></a>`
-    : `<p class="project-pending">Nog geen publieke site</p>`;
+  const href = project.url
+    ? `<a class="project-link" href="${escapeHtml(safeHttpUrl(project.url))}" target="_blank" rel="noopener noreferrer">${escapeHtml(project.hrefLabel ?? "Open project")} <span aria-hidden="true">↗</span></a>`
+    : `<p class="project-pending">Nog geen link</p>`;
   return `<article class="project project-${escapeHtml(project.slug)} reveal">
     <div class="project-top"><span class="project-status"><i></i> ${escapeHtml(project.publicLabel)}</span></div>
     ${renderVisual(project)}
@@ -53,17 +56,24 @@ export function renderFeaturedProject() {
   }
   const href = safeHttpUrl(project.url);
   return `<section id="defaultstackr" class="stackr" aria-labelledby="defaultstackr-title">
-    <p class="stackr-kicker"><span></span> ${escapeHtml(project.publicLabel)}</p>
-    <h1 id="defaultstackr-title">${escapeHtml(project.name)}</h1>
-    <p class="stackr-line">${escapeHtml(project.cardTitle)}</p>
-    <p class="stackr-lead">${escapeHtml(project.summary)}</p>
-    <ul class="stackr-points" aria-label="Wat er nu van DefaultStackr bekend is">
-      <li>PostgreSQL in de testomgeving</li>
-      <li>Interface in ontwikkeling</li>
-      <li>Hostingkoppeling gepland</li>
-    </ul>
-    <a class="stackr-cta" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(project.hrefLabel)}</span><i aria-hidden="true">↗</i></a>
-    <p class="stackr-note">Een product van CodedByDefault. Nog geen live dienst, en geen klanten of cijfers om te tonen.</p>
+    <div class="stackr-ambient a" aria-hidden="true"></div>
+    <div class="stackr-ambient b" aria-hidden="true"></div>
+    <div class="stackr-inner">
+      <p class="stackr-brand">
+        <span class="stackr-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="stackr-word">Default<span>Stackr</span><small>by CodedByDefault</small></span>
+      </p>
+      <p class="stackr-kicker"><b class="stackr-dot" aria-hidden="true"></b> ${escapeHtml(project.publicLabel)}</p>
+      <h1 id="defaultstackr-title">Build. Deploy. <em>Scale.</em></h1>
+      <p class="stackr-line">Your entire stack. One platform.</p>
+      <p class="stackr-lead">${escapeHtml(project.summary)}</p>
+      <a class="stackr-cta" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(project.hrefLabel)} <span aria-hidden="true">↗</span></a>
+      <ul class="stackr-points" aria-label="Wat er nu van DefaultStackr bekend is">
+        <li>PostgreSQL in de testomgeving</li>
+        <li>Interface in ontwikkeling</li>
+        <li>Hostingkoppeling gepland</li>
+      </ul>
+    </div>
   </section>`;
 }
 
@@ -76,6 +86,6 @@ export function renderProjectSection() {
     <div class="project-stage">
       ${HOME_CARDS.map(renderCard).join("\n")}
     </div>
-    <p class="project-disclaimer reveal">Logo's komen van de projecten zelf. BUMPR heeft nog geen site of logo. Het Plainwork-beeld is een schermafbeelding van de publieke homepage.</p>
+    <p class="project-disclaimer reveal">Logo's komen van de projecten zelf. BUMPR heeft nog geen webshoplink. Het Plainwork-beeld is een schermafbeelding van de publieke homepage.</p>
   </section>`;
 }
