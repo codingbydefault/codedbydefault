@@ -1,6 +1,6 @@
-export const PROJECT_STATUSES = ["in_ontwikkeling", "live", "niet_gestart", "gepauzeerd"] as const;
+import { CATALOG_PROJECTS, PROJECT_STATUSES, type ProjectStatus } from "../../content/projects";
 
-export type ProjectStatus = (typeof PROJECT_STATUSES)[number];
+export { PROJECT_STATUSES, type ProjectStatus };
 
 export type ProjectCard = {
   slug: string;
@@ -10,6 +10,7 @@ export type ProjectCard = {
   progress: number;
   url: string | null;
   sortOrder: number;
+  featured: boolean;
 };
 
 export const STATUS_LABELS: Record<ProjectStatus, string> = {
@@ -19,62 +20,16 @@ export const STATUS_LABELS: Record<ProjectStatus, string> = {
   gepauzeerd: "Gepauzeerd",
 };
 
-export const STARTER_PROJECTS: readonly ProjectCard[] = [
-  {
-    slug: "geregeldwerk",
-    name: "Geregeldwerk",
-    summary: "App voor terugkerend werk, planning en opvolging.",
-    status: "in_ontwikkeling",
-    progress: 45,
-    url: null,
-    sortOrder: 1,
-  },
-  {
-    slug: "fodmap-tracker",
-    name: "FODMAP-tracker",
-    summary: "Registratietool voor voeding en FODMAP-aandachtspunten.",
-    status: "in_ontwikkeling",
-    progress: 40,
-    url: null,
-    sortOrder: 2,
-  },
-  {
-    slug: "de-bumperbank",
-    name: "De Bumperbank",
-    summary: "Webshop.",
-    status: "in_ontwikkeling",
-    progress: 20,
-    url: null,
-    sortOrder: 3,
-  },
-  {
-    slug: "automarktplaats",
-    name: "Automarktplaats",
-    summary: "Marktplaats voor auto's.",
-    status: "niet_gestart",
-    progress: 0,
-    url: null,
-    sortOrder: 4,
-  },
-  {
-    slug: "custom-car-build",
-    name: "Custom car build",
-    summary: "Concept voor een custom car build.",
-    status: "niet_gestart",
-    progress: 0,
-    url: null,
-    sortOrder: 5,
-  },
-  {
-    slug: "agent-app",
-    name: "Agent-app",
-    summary: "Concept voor een agent-app.",
-    status: "niet_gestart",
-    progress: 0,
-    url: null,
-    sortOrder: 6,
-  },
-];
+export const STARTER_PROJECTS: readonly ProjectCard[] = CATALOG_PROJECTS.map((project) => ({
+  slug: project.slug,
+  name: project.name,
+  summary: project.summary,
+  status: project.status,
+  progress: project.progress,
+  url: project.url,
+  sortOrder: project.sortOrder,
+  featured: project.featured,
+}));
 
 export type ProjectUpdate = {
   slug: string;

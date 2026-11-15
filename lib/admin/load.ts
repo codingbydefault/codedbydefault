@@ -72,6 +72,24 @@ function asVisits(data: unknown): VisitorPoint[] {
   });
 }
 
+async function loadProjectRows(client: SupabaseClient) {
+  const withFeatured = await client
+    .from("projects")
+    .select("slug, name, summary, status, progress, url, sort_order, featured")
+    .order("sort_order", { ascending: true });
+  if (!withFeatured.error) return withFeatured;
+  if (!/featured/i.test(withFeatured.error.message)) return withFeatured;
+  const withoutFeatured = await client
+    .from("projects")
+    .select("slug, name, summary, status, progress, url, sort_order")
+    .order("sort_order", { ascending: true });
+  if (withoutFeatured.error || !withoutFeatured.data) return withoutFeatured;
+  return {
+    ...withoutFeatured,
+    data: withoutFeatured.data.map((row) => ({ ...row, featured: false })),
+  };
+}
+
 export async function loadDashboard(hideTests: boolean, now = new Date()): Promise<DashboardResult> {
   const client = createAdminClient();
   if (!client) return { ok: false, reason: "niet-geconfigureerd" };
@@ -101,7 +119,7 @@ export async function loadDashboard(hideTests: boolean, now = new Date()): Promi
       guidesQuery,
       scansQuery,
       client.rpc("admin_daily_visits", { from_day: fromDay }),
-      client.from("projects").select("slug, name, summary, status, progress, url, sort_order").order("sort_order", { ascending: true }),
+      loadProjectRows(client),
     ]);
 
     for (const result of [guideRows, scanRows, visitRows, projectRows]) {
@@ -141,6 +159,7 @@ export async function loadDashboard(hideTests: boolean, now = new Date()): Promi
         progress: Number.isFinite(progress) ? progress : 0,
         url: typeof row.url === "string" ? row.url : null,
         sortOrder: Number(row.sort_order) || 0,
+        featured: row.featured === true,
       }];
     });
 

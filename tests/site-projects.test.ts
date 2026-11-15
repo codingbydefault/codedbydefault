@@ -1,56 +1,49 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import test from "node:test";
-import { SITE_PROJECTS, SITE_UPDATES } from "../content/site-projects";
-import { renderSiteProjects } from "../lib/site/render-projects";
+import { CATALOG_PROJECTS, HOME_CARDS } from "../content/projects";
+import { STARTER_PROJECTS } from "../lib/admin/projects";
+import { renderFeaturedProject, renderProjectSection } from "../lib/site/render-projects";
 
-test("de homepage noemt de drie publieke producten en houdt de bestaande", () => {
+const syncMigration = fs.readFileSync("supabase/migrations/20261115080000_sync_public_projects.sql", "utf8");
+
+test("homepage en beheer delen dezelfde projectlijst", () => {
+  assert.equal(STARTER_PROJECTS.length, CATALOG_PROJECTS.length);
   assert.deepEqual(
-    SITE_PROJECTS.map((project) => project.slug),
-    ["plainwork-studio", "geregeldwerk", "fodmap-tracker"],
+    STARTER_PROJECTS.map((project) => project.slug),
+    CATALOG_PROJECTS.map((project) => project.slug),
   );
-  for (const project of SITE_PROJECTS) {
-    assert.match(project.href, /^https:\/\//);
-    assert.ok(project.features.some((feature) => feature.state === "nu"));
+  assert.equal(STARTER_PROJECTS[0]?.name, "DefaultStackr");
+  assert.equal(STARTER_PROJECTS[0]?.featured, true);
+  assert.equal(HOME_CARDS.some((project) => project.slug === "defaultstackr"), false);
+  for (const project of CATALOG_PROJECTS) {
+    assert.ok(project.summary.length <= 400, project.slug);
+    assert.equal(project.progress, 0);
   }
 });
 
-test("live functies blijven gescheiden van wat nog binnenkort is", () => {
-  const liveText = SITE_PROJECTS.flatMap((project) =>
-    project.features.filter((feature) => feature.state === "nu").map((feature) => feature.text),
-  )
-    .join(" ")
-    .toLowerCase();
-  assert.equal(liveText.includes("whatsapp"), false);
-  assert.equal(liveText.includes("gbp"), false);
-  assert.equal(liveText.includes("meertal"), false);
-  assert.equal(liveText.includes("peppol"), false);
-
-  const geregeldwerk = SITE_PROJECTS.find((project) => project.slug === "geregeldwerk");
-  assert.ok(geregeldwerk);
-  assert.match(geregeldwerk.summary, /wachtlijst/i);
-  assert.match(geregeldwerk.features.map((feature) => feature.text).join(" "), /29,95/);
-  assert.equal(geregeldwerk.visual.type, "logo");
-  if (geregeldwerk.visual.type === "logo") {
-    assert.equal(geregeldwerk.visual.src, "/projects/geregeldwerk-logo-transparant.png");
-  }
-
-  const fodmap = SITE_PROJECTS.find((project) => project.slug === "fodmap-tracker");
-  assert.ok(fodmap);
-  assert.equal(fodmap.visual.type, "logo");
-  assert.match(fodmap.summary, /geen medisch advies/i);
-  assert.match(fodmap.summary, /geen gevalideerde FODMAP-classificaties/i);
+test("de kaarten blijven eerlijk over status en links", () => {
+  const bumpr = HOME_CARDS.find((project) => project.slug === "bumpr");
+  const bumper = HOME_CARDS.find((project) => project.slug === "de-bumperbank");
+  const plainwork = HOME_CARDS.find((project) => project.slug === "plainwork-studio");
+  assert.equal(bumpr?.url, null);
+  assert.equal(bumpr?.publicLabel, "Binnenkort");
+  assert.match(bumper?.summary ?? "", /nog niet mogelijk/);
+  assert.equal(plainwork?.url, "https://plainwork-studio.vercel.app/");
+  const html = `${renderFeaturedProject()}\n${renderProjectSection()}`;
+  assert.match(html, /<h1 id="defaultstackr-title">DefaultStackr<\/h1>/);
+  assert.match(html, /href="https:\/\/www\.defaultstackr\.cloud\/"/);
+  assert.match(html, /Nog geen live dienst/);
+  assert.match(html, /de-bumperbank\.svg/);
+  assert.equal(html.includes('href=""'), false);
+  assert.match(html, /Nog geen publieke site/);
 });
 
-test("de projectsectie rendert logos, de schermafbeelding en de updates", () => {
-  const html = renderSiteProjects();
-  assert.match(html, /id="projecten"/);
-  assert.match(html, /geregeldwerk-logo-transparant\.png/);
-  assert.equal(html.includes("geregeldwerk-icoon.png"), false);
-  assert.match(html, /fodmap-logo\.png/);
-  assert.match(html, /plainwork-home\.jpg/);
-  assert.equal(html.includes("food-card"), false);
-  assert.equal(html.includes("phone"), false);
-  assert.equal(SITE_UPDATES.some((update) => update.project === "Plainwork Studio" && /open concepten/i.test(update.text)), true);
-  assert.match(html, /Laatste updates/);
-  assert.match(html, /Binnenkort/);
+test("de migratie voegt featured toe en overschrijft geen voortgang", () => {
+  assert.match(syncMigration, /add column if not exists featured boolean not null default false/);
+  assert.equal(/progress\s*=\s*excluded\.progress/i.test(syncMigration), false);
+  for (const slug of ["defaultstackr", "de-bumperbank", "bumpr", "fodmap-tracker", "geregeldwerk", "plainwork-studio"]) {
+    assert.match(syncMigration, new RegExp(`'${slug}'`));
+  }
+  assert.match(syncMigration, /'defaultstackr'[\s\S]*true/);
 });
