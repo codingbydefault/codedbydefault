@@ -114,7 +114,10 @@ function ProjectEditor({ project, open }: { project: ProjectCard; open: boolean 
     <article className={`project-card status-${project.status}`}>
       <div className="project-top">
         <span className="status-pill">{STATUS_LABELS[project.status]}</span>
-        <span className="progress-label">{project.progress}%</span>
+        <span className="project-marks">
+          {project.featured ? <span className="featured-flag">Uitgelicht</span> : null}
+          <span className="progress-label">{project.progress}%</span>
+        </span>
       </div>
       <h3>{project.name}</h3>
       <p>{project.summary}</p>
@@ -250,7 +253,7 @@ export function DashboardView({
       <section>
         <div className="panel-head">
           <h2>Projecten</h2>
-          <p>Status, voortgang en link. Aanpassen geldt meteen voor dit overzicht.</p>
+          <p>Naam, omschrijving, link, status en of het project uitgelicht is. Aanpassen geldt meteen voor dit overzicht.</p>
         </div>
         {model.projects.length === 0 ? <p className="empty">Nog geen projecten. Draai de migratie om de startlijst te vullen.</p> : (
           <div className="project-grid">

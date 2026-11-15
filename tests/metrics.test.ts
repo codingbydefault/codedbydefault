@@ -102,11 +102,19 @@ test("de migratie zet RLS aan en seedt de projecten", () => {
   assert.match(migration, /grant execute on function app_private\.touch_updated_at\(\) to authenticated, service_role/);
   assert.equal(migration.includes("security definer"), true);
   assert.equal(migration.includes("create or replace function public.admin_daily_visits"), true);
-  for (const project of STARTER_PROJECTS) {
-    const line = migration.split("\n").find((entry) => entry.includes(`'${project.slug}'`));
-    assert.ok(line, project.slug);
-    assert.match(line ?? "", new RegExp(`'${project.status}'`));
-    assert.match(line ?? "", new RegExp(`, ${project.progress},`));
+  const originalSeed = [
+    ["geregeldwerk", "in_ontwikkeling", 45],
+    ["fodmap-tracker", "in_ontwikkeling", 40],
+    ["de-bumperbank", "in_ontwikkeling", 20],
+    ["automarktplaats", "niet_gestart", 0],
+    ["custom-car-build", "niet_gestart", 0],
+    ["agent-app", "niet_gestart", 0],
+  ] as const;
+  for (const [slug, status, progress] of originalSeed) {
+    const line = migration.split("\n").find((entry) => entry.includes(`'${slug}'`));
+    assert.ok(line, slug);
+    assert.match(line ?? "", new RegExp(`'${status}'`));
+    assert.match(line ?? "", new RegExp(`, ${progress},`));
   }
   const names = recentRequests([
     { id: "1", kind: "quickscan", createdAt: "2026-11-07T10:00:00.000Z", name: "A", email: "a@b.nl", detail: "https://b.nl", isTest: false },
@@ -115,13 +123,14 @@ test("de migratie zet RLS aan en seedt de projecten", () => {
   assert.deepEqual(names, ["B", "A"]);
 });
 
-test("voorbeelddata verbergt testaanvragen en houdt de zes projecten", () => {
+test("voorbeelddata verbergt testaanvragen en toont de gedeelde projectlijst", () => {
   const now = new Date("2026-11-07T11:13:00.000Z");
   const hidden = createSampleDashboard(now, true);
   const shown = createSampleDashboard(now, false);
-  assert.equal(hidden.projects.length, 6);
-  assert.equal(hidden.projects[0]?.name, "Geregeldwerk");
-  assert.equal(hidden.projects[3]?.status, "niet_gestart");
+  assert.equal(hidden.projects.length, STARTER_PROJECTS.length);
+  assert.equal(hidden.projects[0]?.name, "DefaultStackr");
+  assert.equal(hidden.projects[0]?.featured, true);
+  assert.equal(hidden.projects.find((project) => project.slug === "automarktplaats")?.status, "niet_gestart");
   assert.ok(hidden.guides.total < shown.guides.total);
   assert.equal(hidden.requests.some((row) => row.email === "delivered@resend.dev"), false);
   assert.equal(shown.requests.some((row) => row.isTest), true);

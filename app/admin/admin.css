@@ -7,11 +7,13 @@
   font-family: Manrope, sans-serif;
 }
 
+html:has(.admin-root),
 body:has(.admin-root) {
   background: #080a0e;
   color: #f6f4ee;
-  overflow: auto;
+  overflow-x: clip;
 }
+body:has(.admin-root) { overflow-y: auto; }
 
 .admin-root * { box-sizing: border-box; }
 .admin-root a { color: inherit; }
@@ -124,6 +126,8 @@ td a { color: #c7ff35; }
 .status-niet_gestart .status-pill { color: #c5cad1; border-color: rgba(255, 255, 255, 0.2); }
 .status-gepauzeerd .status-pill { color: #ff5c35; border-color: rgba(255, 92, 53, 0.5); }
 .status-live .status-pill { background: #c7ff35; color: #080a0e; }
+.project-marks { display: flex; align-items: center; gap: 8px; }
+.featured-flag { border: 1px solid #c7ff35; background: #c7ff35; color: #080a0e; border-radius: 999px; padding: 5px 8px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
 .progress-label { color: #9da1a8; font-size: 11px; }
 .progress { height: 8px; background: #232833; border-radius: 999px; overflow: hidden; margin: 16px 0; }
 .progress span { display: block; height: 100%; background: #c7ff35; }
@@ -176,6 +180,13 @@ td a { color: #c7ff35; }
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+.sr-only table,
+table.sr-only {
+  table-layout: fixed;
+  width: 1px;
+  min-width: 0;
+  max-width: 1px;
 }
 
 @media (max-width: 900px) {
