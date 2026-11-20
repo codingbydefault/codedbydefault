@@ -1,13 +1,38 @@
 import type { Metadata, Viewport } from "next";
 import "./reset.css";
 
+const title = "CodedByDefault — Beyond default";
+const description =
+  "CodedByDefault ontwerpt en bouwt digitale producten op het snijvlak van webdesign, software, AI en IT.";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.codedbydefault.com"),
-  title: "CodedByDefault — Beyond default",
-  description:
-    "CodedByDefault ontwerpt en bouwt digitale producten op het snijvlak van webdesign, software, AI en IT.",
+  title,
+  description,
   alternates: { canonical: "/" },
   icons: { icon: "/assets/codedbydefault-logo-v02.png" },
+  openGraph: {
+    title,
+    description,
+    url: "/",
+    siteName: "CodedByDefault",
+    locale: "nl_NL",
+    type: "website",
+    images: [
+      {
+        url: "/assets/codedbydefault-logo-v02.png",
+        width: 2011,
+        height: 782,
+        alt: "CodedByDefault",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/assets/codedbydefault-logo-v02.png"],
+  },
 };
 
 export const viewport: Viewport = {

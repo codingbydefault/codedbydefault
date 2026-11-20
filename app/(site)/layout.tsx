@@ -7,12 +7,12 @@ export default function SiteLayout({ children }: Readonly<{ children: React.Reac
   return (
     <>
       <link rel="stylesheet" href="/styles.css?v=20261104-3" />
-      <link rel="stylesheet" href="/projects.css?v=20261115-2" />
+      <link rel="stylesheet" href="/projects.css?v=20261120-1" />
       {children}
       <PageviewBeacon />
       <Analytics />
       <SpeedInsights />
-      <Script src="/site.js?v=20261104-2" strategy="afterInteractive" />
+      <Script src="/site.js?v=20261120-1" strategy="afterInteractive" />
     </>
   );
 }
