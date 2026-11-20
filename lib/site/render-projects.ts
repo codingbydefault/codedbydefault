@@ -16,14 +16,50 @@ function safeHttpUrl(value: string) {
   return url.toString();
 }
 
+const RESPONSIVE_RASTER: Record<string, { src: string; srcset: string; sizes: string; width: number; height: number }> = {
+  "/projects/fodmap-logo.png": {
+    src: "/projects/fodmap-logo-160.webp",
+    srcset: "/projects/fodmap-logo-160.webp 160w, /projects/fodmap-logo-240.webp 240w",
+    sizes: "132px",
+    width: 160,
+    height: 160,
+  },
+  "/projects/geregeldwerk-logo-transparant.png": {
+    src: "/projects/geregeldwerk-logo-320.webp",
+    srcset: "/projects/geregeldwerk-logo-320.webp 320w, /projects/geregeldwerk-logo-480.webp 480w",
+    sizes: "(max-width: 600px) 260px, 280px",
+    width: 320,
+    height: 79,
+  },
+  "/projects/plainwork-home.jpg": {
+    src: "/projects/plainwork-home-480.webp",
+    srcset: "/projects/plainwork-home-480.webp 480w, /projects/plainwork-home-640.webp 640w",
+    sizes: "(min-width: 1180px) 420px, (min-width: 800px) 46vw, calc(100vw - 40px)",
+    width: 480,
+    height: 287,
+  },
+};
+
+function renderRaster(visual: { src: string; alt: string; width: number; height: number }, className?: string) {
+  const sized = RESPONSIVE_RASTER[visual.src];
+  const src = sized?.src ?? visual.src;
+  const width = sized?.width ?? visual.width;
+  const height = sized?.height ?? visual.height;
+  const classAttr = className ? ` class="${className}"` : "";
+  const responsive = sized
+    ? ` srcset="${escapeHtml(sized.srcset)}" sizes="${escapeHtml(sized.sizes)}"`
+    : "";
+  return `<img${classAttr} src="${escapeHtml(src)}"${responsive} alt="${escapeHtml(visual.alt)}" width="${width}" height="${height}" loading="lazy" decoding="async">`;
+}
+
 function renderVisual(project: CatalogProject) {
   const visual: ProjectVisual = project.visual;
   if (visual.type === "logo") {
-    return `<div class="project-visual is-logo"><img class="project-logo" src="${escapeHtml(visual.src)}" alt="${escapeHtml(visual.alt)}" width="${visual.width}" height="${visual.height}"></div>`;
+    return `<div class="project-visual is-logo">${renderRaster(visual, "project-logo")}</div>`;
   }
   if (visual.type === "screenshot") {
     const href = project.url ? safeHttpUrl(project.url) : "";
-    const image = `<img src="${escapeHtml(visual.src)}" alt="${escapeHtml(visual.alt)}" width="${visual.width}" height="${visual.height}">`;
+    const image = renderRaster(visual);
     if (!href) return `<div class="project-visual is-screenshot">${image}</div>`;
     return `<a class="project-visual is-screenshot" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${image}</a>`;
   }

@@ -18,7 +18,7 @@ export function AdminShell({
     <>
       <header className="admin-bar">
         <div className="admin-brand">
-          <img src="/assets/codedbydefault-logo-v02.png" alt="" width={148} height={58} />
+          <img src="/assets/codedbydefault-logo-160.webp" alt="" width={148} height={58} decoding="async" />
           <div>
             <p>CodedByDefault</p>
             <strong>Beheer</strong>

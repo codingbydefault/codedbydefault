@@ -1,6 +1,19 @@
 const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
 document.documentElement.classList.add('js'); $('#year').textContent=new Date().getFullYear();
 
+const navToggle=$('.nav-toggle'), topbar=$('.topbar');
+if(navToggle&&topbar){
+  const label=navToggle.querySelector('span');
+  const setOpen=open=>{
+    topbar.classList.toggle('is-nav-open',open);
+    navToggle.setAttribute('aria-expanded',open?'true':'false');
+    if(label)label.textContent=open?'Sluit':'Menu';
+  };
+  navToggle.addEventListener('click',()=>setOpen(navToggle.getAttribute('aria-expanded')!=='true'));
+  $$('.nav-links a').forEach(link=>link.addEventListener('click',()=>setOpen(false)));
+  addEventListener('keydown',event=>{if(event.key==='Escape')setOpen(false)});
+}
+
 const reveal=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.12});
 $$('.reveal').forEach(el=>reveal.observe(el));
 
@@ -33,7 +46,10 @@ if(quickscanForm){
     button.disabled=true;
     button.querySelector('span').textContent='Aanvraag versturen…';
     status.textContent='Een moment, we verwerken je aanvraag veilig.';
-    status.classList.remove('is-error');
+    status.classList.remove('is-error','is-active');
+    status.classList.add('is-pending');
+    status.setAttribute('role','status');
+    quickscanForm.setAttribute('aria-busy','true');
     fetch('/api/quickscan',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -43,14 +59,18 @@ if(quickscanForm){
       if(!response.ok)throw new Error(result.message||'Versturen is niet gelukt.');
       quickscanForm.reset();
       status.textContent='Bedankt! De bevestiging is onderweg. Binnen 24 uur ontvang je ons persoonlijke rapport met drie mogelijke verbeteringen.';
+      status.classList.remove('is-pending');
       status.classList.add('is-active');
       if(typeof window.va==='function')window.va('event',{name:'Quickscan aangevraagd'});
     }).catch(error=>{
       status.textContent=`${error.message} Probeer het opnieuw of mail naar codedbydefault@gmail.com.`;
+      status.classList.remove('is-pending');
       status.classList.add('is-error');
+      status.setAttribute('role','alert');
     }).finally(()=>{
       button.disabled=false;
       button.querySelector('span').textContent='Vraag mijn quickscan aan';
+      quickscanForm.removeAttribute('aria-busy');
     });
   });
 }
@@ -67,6 +87,9 @@ if(guideForm){
     button.querySelector('span').textContent='Gids versturen…';
     status.textContent='Een moment, we maken je downloadmail klaar.';
     status.classList.remove('is-success','is-error');
+    status.classList.add('is-pending');
+    status.setAttribute('role','status');
+    guideForm.setAttribute('aria-busy','true');
     fetch('/api/guide',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -76,14 +99,18 @@ if(guideForm){
       if(!response.ok)throw new Error(result.message||'Versturen is niet gelukt.');
       guideForm.reset();
       status.textContent='Gelukt! Controleer je inbox voor de downloadlink. Kijk ook even bij ongewenste e-mail.';
+      status.classList.remove('is-pending');
       status.classList.add('is-success');
       if(typeof window.va==='function')window.va('event',{name:'AI-gids aangevraagd'});
     }).catch(error=>{
       status.textContent=`${error.message} Probeer het opnieuw of mail naar codedbydefault@gmail.com.`;
+      status.classList.remove('is-pending');
       status.classList.add('is-error');
+      status.setAttribute('role','alert');
     }).finally(()=>{
       button.disabled=false;
       button.querySelector('span').textContent='Stuur de gids naar mijn inbox';
+      guideForm.removeAttribute('aria-busy');
     });
   });
 }

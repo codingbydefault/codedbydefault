@@ -4,7 +4,7 @@
     linear-gradient(180deg, rgba(199, 255, 53, 0.08), transparent 180px),
     #080a0e;
   color: #f6f4ee;
-  font-family: Manrope, sans-serif;
+  font-family: var(--font-manrope), Manrope, sans-serif;
 }
 
 html:has(.admin-root),
@@ -42,12 +42,12 @@ body:has(.admin-root) { overflow-y: auto; }
 .status-pill,
 .metric dt,
 .conversion small {
-  font-family: "DM Mono", ui-monospace, monospace;
+  font-family: var(--font-dm-mono), "DM Mono", ui-monospace, monospace;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .admin-brand p { margin: 0; color: #9da1a8; font-size: 10px; }
-.admin-brand strong { font-family: Syne, sans-serif; font-size: 22px; letter-spacing: -0.04em; }
+.admin-brand strong { font-family: var(--font-syne), Syne, sans-serif; font-size: 22px; letter-spacing: -0.04em; }
 .admin-session { display: flex; align-items: center; gap: 16px; }
 .admin-session span { color: #9da1a8; font-size: 11px; text-transform: none; letter-spacing: 0; }
 
@@ -55,7 +55,7 @@ body:has(.admin-root) { overflow-y: auto; }
 .page-head,
 .panel-head { display: flex; justify-content: space-between; gap: 18px; align-items: end; }
 .kicker { margin: 0 0 8px; color: #c7ff35; font-size: 11px; }
-h1, h2, h3 { font-family: Syne, sans-serif; letter-spacing: -0.04em; margin: 0; }
+h1, h2, h3 { font-family: var(--font-syne), Syne, sans-serif; letter-spacing: -0.04em; margin: 0; }
 h1 { font-size: clamp(48px, 7vw, 84px); line-height: 0.9; }
 h2 { font-size: 28px; }
 h3 { font-size: 28px; margin: 14px 0 8px; }
@@ -97,7 +97,7 @@ a.ghost { background: transparent; color: #f6f4ee; }
 .metric dt,
 .conversion dt { color: #9da1a8; font-size: 10px; }
 .metric dd,
-.conversion dd { margin: 4px 0 0; font-family: Syne, sans-serif; font-size: 32px; letter-spacing: -0.05em; }
+.conversion dd { margin: 4px 0 0; font-family: var(--font-syne), Syne, sans-serif; font-size: 32px; letter-spacing: -0.05em; }
 .metric .is-today dd { color: #c7ff35; }
 
 .reach { display: grid; grid-template-columns: 1.7fr 0.9fr; gap: 14px; margin: 14px 0; }
@@ -109,16 +109,16 @@ a.ghost { background: transparent; color: #f6f4ee; }
 .chart svg { width: 100%; height: auto; display: block; }
 .chart .bar { fill: #c7ff35; }
 .chart .bar-empty { fill: rgba(255, 255, 255, 0.14); }
-.chart figcaption { display: flex; justify-content: space-between; color: #9da1a8; font-family: "DM Mono", monospace; font-size: 11px; margin-top: 8px; }
+.chart figcaption { display: flex; justify-content: space-between; color: #9da1a8; font-family: var(--font-dm-mono), "DM Mono", monospace; font-size: 11px; margin-top: 8px; }
 .conversion dd { font-size: 42px; color: #c7ff35; }
-.conversion small { display: block; text-transform: none; letter-spacing: 0; font-family: Manrope, sans-serif; }
+.conversion small { display: block; text-transform: none; letter-spacing: 0; font-family: var(--font-manrope), Manrope, sans-serif; }
 
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; min-width: 720px; }
 th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); vertical-align: top; }
-th { color: #9da1a8; font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; }
+th { color: #9da1a8; font-family: var(--font-dm-mono), "DM Mono", monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; }
 td a { color: #c7ff35; }
-.test-tag { margin-left: 8px; color: #ff5c35; font-style: normal; font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+.test-tag { margin-left: 8px; color: #ff5c35; font-style: normal; font-family: var(--font-dm-mono), "DM Mono", monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
 
 .project-card { padding: 18px; }
 .project-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
@@ -162,7 +162,7 @@ td a { color: #c7ff35; }
   padding: 32px 16px;
 }
 .login-card { width: min(460px, 100%); padding: 32px 28px; }
-.login-card .brand { margin: 0 0 28px; font-family: Syne, sans-serif; font-weight: 800; letter-spacing: -0.06em; font-size: 22px; }
+.login-card .brand { margin: 0 0 28px; font-family: var(--font-syne), Syne, sans-serif; font-weight: 800; letter-spacing: -0.06em; font-size: 22px; }
 .login-card .brand span { color: #c7ff35; }
 .login-card h1 { font-size: 64px; }
 .login-card > p { color: #b7bcc4; }
