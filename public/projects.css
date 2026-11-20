@@ -58,7 +58,7 @@
 .project-disclaimer{text-align:left;max-width:720px;margin:18px 0 0;color:#777c84;font:8px/1.6 'DM Mono';letter-spacing:.06em}
 #projecten,#defaultstackr{scroll-margin-top:96px}
 footer{position:relative;padding-bottom:58px}
-footer .legal{position:absolute;left:var(--pad);bottom:20px;color:#666b73}
+footer .legal{position:absolute;left:var(--pad);bottom:20px;color:#80848b}
 @media(min-width:800px){.project-stage{grid-template-columns:1fr 1fr}}
 @media(min-width:1180px){.project-stage{grid-template-columns:1fr 1fr 1fr}}
 @media(max-width:900px){.stackr{min-height:auto;padding:120px var(--pad) 64px}.projects{padding:80px var(--pad)}}
